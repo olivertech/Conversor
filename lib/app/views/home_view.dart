@@ -15,8 +15,8 @@ class HomeView extends StatelessWidget {
             children: [
               Image.asset(
                 'assets/images/logo.png',
-                width: 100,
-                height: 100,
+                width: 110.0,
+                height: 110.0,
               ),
             ],
           ),
