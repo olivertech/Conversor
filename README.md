@@ -1,3 +1,3 @@
-# conversor
+# Conversor
 
-A new Flutter project.
+Projeto de um aplicativo de conversor de moedas, desenvolvido em Flutter.
