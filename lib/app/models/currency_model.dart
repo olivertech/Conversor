@@ -13,7 +13,7 @@ class CurrencyModel {
       required this.euro,
       required this.bitcoin});
 
-  ///Método que retorna as moedas
+  ///Método estático que retorna as moedas
   static List<CurrencyModel> getCurrencies() {
     return <CurrencyModel>[
       CurrencyModel(
