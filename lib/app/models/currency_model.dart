@@ -1,4 +1,5 @@
 class CurrencyModel {
+  ///Propriedades da Model
   final String name;
   final double real;
   final double dolar;

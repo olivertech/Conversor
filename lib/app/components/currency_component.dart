@@ -1,16 +1,46 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, no_logic_in_create_state, unused_field, slash_for_doc_comments
 
+import 'package:conversor/app/models/currency_model.dart';
 import 'package:flutter/material.dart';
 
+/**
+ * Classe StateFull
+ */
 class CurrencyComponent extends StatefulWidget {
-  const CurrencyComponent({super.key});
+  final List<CurrencyModel> items;
+  final TextEditingController controller;
+  final CurrencyModel selectedCurrency;
+  final int index;
+  //Funçao que uso pra retornar o valor interno do componente
+  final Function(CurrencyModel value) onChange;
 
+/**
+ * Construtor
+ */
+  const CurrencyComponent(
+      {super.key,
+      required this.items,
+      required this.controller,
+      required this.selectedCurrency,
+      required this.index,
+      required this.onChange});
+
+/**
+ * Classe State
+ */
   @override
   State<CurrencyComponent> createState() => _CurrencyComponentState();
 }
 
 class _CurrencyComponentState extends State<CurrencyComponent> {
-  String? selectedMoeda = "Real";
+  late CurrencyModel current;
+
+  @override
+  void initState() {
+    super.initState();
+    current = widget.items[widget.index];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -20,18 +50,22 @@ class _CurrencyComponentState extends State<CurrencyComponent> {
           flex: 1,
           child: SizedBox(
             height: 56,
-            child: DropdownButton(
+            child: DropdownButton<CurrencyModel>(
               underline: Container(height: 1, color: Colors.amber),
               iconEnabledColor: Colors.amber,
               iconSize: 30,
-              items: dropdownItems,
+              items: widget.items
+                  .map((e) => DropdownMenuItem<CurrencyModel>(
+                      value: e, child: Text(e.name)))
+                  .toList(),
               isExpanded: true,
-              value: selectedMoeda,
-              hint: Text("Selecione a Moeda"),
-              onChanged: (String? value) {
+              value: current,
+              hint: Text('Moeda'),
+              onChanged: (CurrencyModel? newValue) {
                 setState(() {
-                  selectedMoeda = value;
+                  current = newValue!;
                 });
+                widget.onChange(newValue!);
               },
             ),
           ),
@@ -42,6 +76,7 @@ class _CurrencyComponentState extends State<CurrencyComponent> {
         Expanded(
           flex: 2,
           child: TextFormField(
+            controller: widget.controller,
             maxLines: 1,
             autofocus: false,
             decoration: InputDecoration(
@@ -57,12 +92,4 @@ class _CurrencyComponentState extends State<CurrencyComponent> {
       ],
     );
   }
-}
-
-List<DropdownMenuItem<String>> get dropdownItems {
-  List<DropdownMenuItem<String>> menuItems = [
-    DropdownMenuItem(value: "Real", child: Text("Real")),
-    DropdownMenuItem(value: "Dolar", child: Text("Dólar")),
-  ];
-  return menuItems;
 }

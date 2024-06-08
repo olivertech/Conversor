@@ -1,21 +1,19 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable, use_key_in_widget_constructors, unused_field, no_logic_in_create_state, prefer_final_fields, slash_for_doc_comments
 // ignore_for_file: prefer_const_constructors, avoid_unnecessary_containers, prefer_const_literals_to_create_immutables
 
-import 'package:conversor/app/components/currency_component.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
-//VER SE CONSIGO RESOLVER O PROBLEMA DO SETSTATE MUDANDO DE STATELESS PARA STATEFULL
+import 'package:conversor/app/components/currency_component.dart';
+import 'package:conversor/app/controllers/home_controller.dart';
+import 'package:conversor/app/models/currency_model.dart';
 
 class HomeView extends StatefulWidget {
-  const HomeView({super.key});
-
   @override
   State<HomeView> createState() => _HomeViewState();
 }
 
 class _HomeViewState extends State<HomeView> {
   //Variável local de estilo aplicado aos botões
-  final ButtonStyle buttonStyle = ElevatedButton.styleFrom(
+  static ButtonStyle buttonStyle = ElevatedButton.styleFrom(
     textStyle: const TextStyle(fontSize: 20),
     backgroundColor: Colors.amber,
     foregroundColor: Colors.white,
@@ -23,6 +21,37 @@ class _HomeViewState extends State<HomeView> {
       borderRadius: BorderRadius.all(Radius.circular(5.0)),
     ),
   );
+
+  TextEditingController _toText = TextEditingController();
+  TextEditingController _fromText = TextEditingController();
+  CurrencyModel _toCurrency = CurrencyModel(
+    name: 'Real',
+    real: 1.0,
+    dolar: 0.18,
+    euro: 0.15,
+    bitcoin: 0.020816,
+  );
+  CurrencyModel _fromCurrency = CurrencyModel(
+    name: 'Dolar',
+    real: 5.65,
+    dolar: 1.0,
+    euro: 0.85,
+    bitcoin: 0.002018,
+  );
+  late HomeController _homeController;
+
+/**
+ * Esse initState pode ser usado como contrutor num widget statefull
+ */
+  @override
+  void initState() {
+    super.initState();
+    _homeController = HomeController(
+        toText: _toText,
+        fromText: _fromText,
+        toCurrency: _toCurrency,
+        fromCurrency: _fromCurrency);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,9 +80,25 @@ class _HomeViewState extends State<HomeView> {
                   ),
                 ),
                 SizedBox(height: 40),
-                CurrencyComponent(),
+                CurrencyComponent(
+                  items: _homeController.currencies,
+                  controller: _toText,
+                  selectedCurrency: _toCurrency,
+                  index: 0,
+                  onChange: (value) {
+                    print(value.name);
+                  },
+                ),
                 SizedBox(height: 15),
-                CurrencyComponent(),
+                CurrencyComponent(
+                  items: _homeController.currencies,
+                  controller: _fromText,
+                  selectedCurrency: _fromCurrency,
+                  index: 1,
+                  onChange: (value) {
+                    print(value.name);
+                  },
+                ),
                 SizedBox(height: 50),
                 ElevatedButton(
                   style: buttonStyle,
@@ -68,3 +113,11 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 }
+
+// List<DropdownMenuItem<CurrencyModel>> get dropdownItems {
+//   List<DropdownMenuItem<CurrencyModel>> menuItems = [
+//     DropdownMenuItem(value: "Real", child: Text("Real")),
+//     DropdownMenuItem(value: "Dolar", child: Text("Dólar")),
+//   ];
+//   return menuItems;
+// }
